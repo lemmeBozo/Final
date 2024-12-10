@@ -2,7 +2,9 @@
 
 using namespace std;
 
-// COMSC-210 | Lab XXXX: XXXXXXXXX | Erick Pascual-Bautista
+// COMSC-210 | Lab FINAL | Erick Pascual-Bautista
+
+struct 
 
 int main() {
     // TEST CHANGES
