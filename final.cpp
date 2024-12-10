@@ -18,8 +18,19 @@ int generateRandomInt(int, int);
 struct CofeeBoothSimulator {
     LinkedList<string, string> queue;
 
-    vector<string> names = {"Alice", "Bob", "Charlie", "Diana", "Eve"};
-    vector<string> drinks = {"Coffee", "Tea", "Latte", "Mocha", "Espresso"};
+    vector<string> names = {
+        "Alice", "Bob", "Charlie", "Diana", "Eve",
+        "Frank", "Grace", "Hank", "Isabella", "Jack",
+        "Karen", "Liam", "Mia", "Nathan", "Olivia",
+        "Paul", "Quincy", "Rachel", "Sophia", "Tom"
+    };
+
+    vector<string> drinks = {
+        "Coffee", "Tea", "Latte", "Mocha", "Espresso",
+        "Cappuccino", "Americano", "Macchiato", "Flat White", "Affogato",
+        "Hot Chocolate", "Chai Latte", "Green Tea", "Herbal Tea", "Iced Coffee",
+        "Iced Latte", "Smoothie", "Matcha", "Turmeric Latte", "Black Tea"
+    };
 
     void addCustomer() {
         string name = names[generateRandomInt(0,names.size() - 1)];
@@ -31,37 +42,47 @@ struct CofeeBoothSimulator {
         for (int i = 0; i < 3; i++) { // Adds 3 customers to the queue
             this->addCustomer();
         }   
-        cout << "Beggining Simulation, Printing initial line" << endl;
+        cout << "\n--- Beginning Simulation ---\n";
+        cout << "Initial queue state:\n";
         queue.print();
     }
 
     void run() {
         int rounds = 10;
         for (int i = 0; i < rounds; i++) {
-            cout << "\t Ronud "<< i + 1 << ": " << endl;
+            cout << "\n===== Round " << i + 1 << " =====\n";
 
             // Server the customer at the head of the queue
             if (!queue.isEmpty()) {
-                cout << "Serving [" << queue.peekFirst() << "] with [" << queue.peekSecond() << "]" << endl;
+                cout << "Serving customer: [Name: " << queue.peekFirst() 
+                    << ", Drink: " << queue.peekSecond() << "]\n";
                 queue.dequeue(); // remove the person from the queue
             } else {
-                cout << "Queue is empty. No one to server" << endl;
+                cout << "Queue is empty. No one to serve.\n";
             }
 
             // 50% chance of a new customer joining the queue
             if (generateRandomInt(0,1) == 1) {
+                cout << "A new customer has joined the queue.\n";
                 this->addCustomer();
-            }
+            } else {cout << "No new customers joined this round.\n";}
+
+            // Printing the queue after the end of the round
+            cout << "Queue at the end of round " << i + 1 << ":\n";
+            queue.print();
         }
+        cout << "\n--- Simulation Complete ---\n";        
     }
 
 };
+//struct MuffinBoothSimulator
 
 
 int main() {
     
     CofeeBoothSimulator sim;
     sim.initializeQueue();
+    sim.run();
 
 
     return 0;
