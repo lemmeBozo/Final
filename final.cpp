@@ -21,7 +21,7 @@ struct Booth {
     // public:
     virtual void initializeQueue() = 0; // Pure virtual function
     virtual string simulateRonud() = 0; // Pure virtual function (too late now mispelled it)
-    // virtual ~Booth() {} (IMPLEMNET DESTRUCTOR)
+    virtual ~Booth() {}
     
 };
 
@@ -40,6 +40,8 @@ struct CoffeeBooth : public Booth {
         "Hot Chocolate", "Chai Latte", "Green Tea", "Herbal Tea", "Iced Coffee",
         "Iced Latte", "Smoothie", "Matcha", "Turmeric Latte", "Black Tea"
     };
+
+    virtual ~CoffeeBooth() override {};
 
     void initializeQueue() override{
         for (int i = 0; i < 3; i++) { // Adds 3 customers to the queue
@@ -92,6 +94,8 @@ struct MuffinBooth : public Booth {
         }
     }
 
+    virtual ~MuffinBooth() override {};
+
     string simulateRonud() override {
         stringstream RoundResult;
         RoundResult << "\nMuffin Booth: \n";
@@ -100,7 +104,7 @@ struct MuffinBooth : public Booth {
             auto served = queue.front();
 
             RoundResult << "Serving: [Name: " << served.first
-                   << ", Drink: " << served.second << "]\n";
+                   << ", Muffin: " << served.second << "]\n";
             queue.pop_front();
         } else {RoundResult << "Queue is empty. No one to serve.\n";}
 
@@ -142,6 +146,8 @@ struct FriendshipBooth : public Booth {
         "Friendship", "Beaded", "Charm", "Bangle", "Cuff"
     };
 
+    virtual ~FriendshipBooth() override {};
+
     void initializeQueue() override {
         for (int i = 0; i < 3; i++) {
             addCustomer();
@@ -156,7 +162,7 @@ struct FriendshipBooth : public Booth {
             auto served = queue.front();
 
             RoundResult << "Serving: [Name: " << served.first
-                   << ", Drink: " << served.second << "]\n";
+                   << ", Bracelet: " << served.second << "]\n";
             queue.erase(queue.begin()); // Removes the first element in the vector
         } else {RoundResult << "Queue is empty. No one to serve.\n";}
 
@@ -195,7 +201,10 @@ struct ClothingBooth : public Booth {
         "T-Shirt", "Cap", "Poster", "Mug", "Keychain"
     };
 
-    public:
+    //public:
+
+    virtual ~ClothingBooth() override {};
+
     void initializeQueue() override {
         for (int i = 0; i < 3; i++) {
             addCustomer();
@@ -204,14 +213,14 @@ struct ClothingBooth : public Booth {
 
     string simulateRonud() override {
         stringstream RoundResult;
-        RoundResult << "\nClothing Bracelet Booth: \n";
+        RoundResult << "\nClothing Booth: \n";
         RoundResult << getQueueState() << "\n";
         if (!queue.empty()) {
             auto served = queue.top();
 
             RoundResult << "Serving: [Name: " << served.first
-                   << ", Drink: " << served.second << "]\n";
-            queue.erase(queue.begin()); // Removes the first element in the vector
+                   << ", Clothing: " << served.second << "]\n";
+            queue.pop();
         } else {RoundResult << "Queue is empty. No one to serve.\n";}
 
         if (generateRandomInt(0,1) == 1) {
@@ -227,6 +236,19 @@ struct ClothingBooth : public Booth {
         string clothes = clothing[generateRandomInt(0,clothing.size() - 1)];
         queue.push({name, clothes}); // Adding the customer to the queue
     }
+
+    string getQueueState() {
+        if (queue.empty()) {return "[Empty]";}
+        stringstream state;
+        stack<pair<string, string>> temp = queue;
+        while (!temp.empty()) {
+            auto customer = temp.top();
+            state << "[" << customer.first << "] = [" << customer.second << "]\n";
+            temp.pop();
+        }
+        return state.str();
+    }
+    
 };
 
 class SimulationManager {
@@ -235,6 +257,11 @@ class SimulationManager {
 
     public:
     // Create destructor here
+    ~SimulationManager() {
+        for (Booth* booth: booths) {
+            delete booth;
+        }
+    }
 
     void addBooth(Booth* booth) {
         booths.push_back(booth);
@@ -264,6 +291,7 @@ int main() {
     manager.addBooth(new CoffeeBooth);
     manager.addBooth(new MuffinBooth);
     manager.addBooth(new FriendshipBooth);
+    manager.addBooth(new ClothingBooth);
     manager.initializeAll();
     manager.RunSimulation();
 
