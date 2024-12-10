@@ -4,7 +4,7 @@
 #include <deque>
 #include <random>
 #include <chrono>
-
+#include <stack>
 #include <sstream>
 
 #include "LinkedList.h" // Including custom data structure
@@ -21,7 +21,7 @@ struct Booth {
     // public:
     virtual void initializeQueue() = 0; // Pure virtual function
     virtual string simulateRonud() = 0; // Pure virtual function (too late now mispelled it)
-    // virtual ~Booth() {}
+    // virtual ~Booth() {} (IMPLEMNET DESTRUCTOR)
     
 };
 
@@ -82,7 +82,7 @@ struct MuffinBooth : public Booth {
     "Paul", "Quincy", "Rachel", "Sophia", "Tom"
     };
 
-    vector<std::string> muffins = {
+    vector<string> muffins = {
         "Blueberry", "Chocolate Chip", "Banana Nut", "Pumpkin", "Corn"
     };
 
@@ -138,15 +138,96 @@ struct FriendshipBooth : public Booth {
         "Karen", "Liam", "Mia", "Nathan", "Olivia",
         "Paul", "Quincy", "Rachel", "Sophia", "Tom"
     };
-    vector<std::string> bracelets = {
+    vector<string> bracelets = {
         "Friendship", "Beaded", "Charm", "Bangle", "Cuff"
     };
 
+    void initializeQueue() override {
+        for (int i = 0; i < 3; i++) {
+            addCustomer();
+        }
+    }
+
+    string simulateRonud() override {
+        stringstream RoundResult;
+        RoundResult << "\nFriendship Bracelet Booth: \n";
+        RoundResult << getQueueState() << "\n";
+        if (!queue.empty()) {
+            auto served = queue.front();
+
+            RoundResult << "Serving: [Name: " << served.first
+                   << ", Drink: " << served.second << "]\n";
+            queue.erase(queue.begin()); // Removes the first element in the vector
+        } else {RoundResult << "Queue is empty. No one to serve.\n";}
+
+        if (generateRandomInt(0,1) == 1) {
+            RoundResult << "A new customer has joined the queue.\n";
+            this->addCustomer();
+        } else {RoundResult << "No new customers joined this round.\n";}
+        return RoundResult.str(); // Return the stringstream as a string
+    }
+
     private:
     void addCustomer() {
-        
+        string name = names[generateRandomInt(0,names.size() - 1)];
+        string bracelet = bracelets[generateRandomInt(0,bracelets.size() - 1)];
+        queue.push_back({name, bracelet}); // Adding the customer to the queue
     }
-}
+    string getQueueState() {
+        if (queue.empty()) {return "[Empty]";}
+        stringstream state;
+        for (auto& customer : queue) {
+            state << "[" << customer.first << "] = [" << customer.second << "]\n";
+        }
+        return state.str();
+    }
+};
+
+struct ClothingBooth : public Booth {
+    stack<pair<string, string>> queue;
+    vector<string> names = {
+        "Alice", "Bob", "Charlie", "Diana", "Eve",
+        "Frank", "Grace", "Hank", "Isabella", "Jack",
+        "Karen", "Liam", "Mia", "Nathan", "Olivia",
+        "Paul", "Quincy", "Rachel", "Sophia", "Tom"
+    };
+    vector<string> clothing = {
+        "T-Shirt", "Cap", "Poster", "Mug", "Keychain"
+    };
+
+    public:
+    void initializeQueue() override {
+        for (int i = 0; i < 3; i++) {
+            addCustomer();
+        }
+    }
+
+    string simulateRonud() override {
+        stringstream RoundResult;
+        RoundResult << "\nClothing Bracelet Booth: \n";
+        RoundResult << getQueueState() << "\n";
+        if (!queue.empty()) {
+            auto served = queue.top();
+
+            RoundResult << "Serving: [Name: " << served.first
+                   << ", Drink: " << served.second << "]\n";
+            queue.erase(queue.begin()); // Removes the first element in the vector
+        } else {RoundResult << "Queue is empty. No one to serve.\n";}
+
+        if (generateRandomInt(0,1) == 1) {
+            RoundResult << "A new customer has joined the queue.\n";
+            this->addCustomer();
+        } else {RoundResult << "No new customers joined this round.\n";}
+        return RoundResult.str(); // Return the stringstream as a string
+    }
+
+    private:
+    void addCustomer() {
+        string name = names[generateRandomInt(0,names.size() - 1)];
+        string clothes = clothing[generateRandomInt(0,clothing.size() - 1)];
+        queue.push({name, clothes}); // Adding the customer to the queue
+    }
+};
 
 class SimulationManager {
     // private:
@@ -182,6 +263,7 @@ int main() {
     SimulationManager manager;
     manager.addBooth(new CoffeeBooth);
     manager.addBooth(new MuffinBooth);
+    manager.addBooth(new FriendshipBooth);
     manager.initializeAll();
     manager.RunSimulation();
 
