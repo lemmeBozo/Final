@@ -1,7 +1,7 @@
 #include <iostream>
 #include <list>
 #include <vector>
-
+#include <deque>
 #include <random>
 #include <chrono>
 
@@ -20,7 +20,7 @@ int generateRandomInt(int, int);
 struct Booth {
     // public:
     virtual void initializeQueue() = 0; // Pure virtual function
-    virtual string simulateRonud() = 0; // Pure virtual function
+    virtual string simulateRonud() = 0; // Pure virtual function (too late now mispelled it)
     // virtual ~Booth() {}
     
 };
@@ -74,6 +74,7 @@ struct CoffeeBooth : public Booth {
 
 struct MuffinBooth : public Booth {
     // public:
+    deque<pair<string,string>> queue; 
     vector<string> names = {
     "Alice", "Bob", "Charlie", "Diana", "Eve",
     "Frank", "Grace", "Hank", "Isabella", "Jack",
@@ -86,10 +87,66 @@ struct MuffinBooth : public Booth {
     };
 
     void initializeQueue() override {
-        
+        for (int i = 0; i < 3; i++) {
+            addCustomer();
+        }
+    }
+
+    string simulateRonud() override {
+        stringstream RoundResult;
+        RoundResult << "\nMuffin Booth: \n";
+        RoundResult << getQueueState() << "\n";
+        if (!queue.empty()) {
+            auto served = queue.front();
+
+            RoundResult << "Serving: [Name: " << served.first
+                   << ", Drink: " << served.second << "]\n";
+            queue.pop_front();
+        } else {RoundResult << "Queue is empty. No one to serve.\n";}
+
+        if (generateRandomInt(0,1) == 1) {
+            RoundResult << "A new customer has joined the queue.\n";
+            this->addCustomer();
+        } else {RoundResult << "No new customers joined this round.\n";}
+        return RoundResult.str(); // Return the stringstream as a string
+    }
+
+    private:
+    void addCustomer() {
+        string name = names[generateRandomInt(0,names.size() - 1)];
+        string muffin = muffins[generateRandomInt(0,muffins.size() - 1)];
+        queue.push_back({name, muffin});
+    }
+
+    string getQueueState() {
+        if (queue.empty()) {return "[Empty]";}
+        stringstream state;
+        for (auto& customer : queue) {
+            state << "[" << customer.first << "] = [" << customer.second << "]\n";
+        }
+        return state.str();
     }
 
 };
+
+struct FriendshipBooth : public Booth {
+    // public:
+    vector<pair<string, string>> queue;
+    vector<string> names = {
+        "Alice", "Bob", "Charlie", "Diana", "Eve",
+        "Frank", "Grace", "Hank", "Isabella", "Jack",
+        "Karen", "Liam", "Mia", "Nathan", "Olivia",
+        "Paul", "Quincy", "Rachel", "Sophia", "Tom"
+    };
+    vector<std::string> bracelets = {
+        "Friendship", "Beaded", "Charm", "Bangle", "Cuff"
+    };
+
+    private:
+    void addCustomer() {
+        
+    }
+}
 
 class SimulationManager {
     // private:
@@ -124,6 +181,7 @@ int main() {
     
     SimulationManager manager;
     manager.addBooth(new CoffeeBooth);
+    manager.addBooth(new MuffinBooth);
     manager.initializeAll();
     manager.RunSimulation();
 
