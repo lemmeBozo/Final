@@ -14,7 +14,7 @@ class LinkedList {
             this->first = dataOne;
             this->second = dataTwo;
             next = nullptr;
-        }
+        };
     }
 
     Node* head;
@@ -36,6 +36,7 @@ class LinkedList {
     bool isEmpty() {return (head == nullptr);}
     int size() {return CurrentSize;}
     void clear();
+    void print();
 
 };
 
@@ -87,6 +88,16 @@ D LinkedList<T,D>::peekSecond() {
 template <typename T, typename D>
 void LinkedList<T,D>::clear() {
     while(!this->isEmpty()) { // while the list isn't empty pop all the elements
-        pop();
+        dequeue();
+    }
+}
+
+// Printing method
+template <typename T, typename D>
+void LinkedList<T, D>::print() {
+    Node* temp = head; 
+    while (temp != nullptr) {
+        std::cout << "[" << temp->first << "] = [" << temp->second << "]\n"; 
+        temp = temp->next; 
     }
 }
