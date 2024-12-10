@@ -15,7 +15,7 @@ class LinkedList {
             this->second = dataTwo;
             next = nullptr;
         };
-    }
+    };
 
     Node* head;
     int CurrentSize;
@@ -51,7 +51,7 @@ LinkedList<T,D>::LinkedList() {
 }
 
 template <typename T, typename D>
-void LinkedList<T,D>::enqueue(T&, D&) {
+void LinkedList<T,D>::enqueue(T& dataOne, D& dataTwo) {
     Node* node = new Node(dataOne, dataTwo);
     if(this->isEmpty()) { // If the queue is empty
         head = node; // the element added is now at the front (i.e. is the head)
