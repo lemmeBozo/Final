@@ -26,8 +26,7 @@ struct Booth {
 };
 
 struct CoffeeBooth : public Booth {
-    // private: (make private later)
-
+    // public: 
     LinkedList<string, string> queue;
     vector<string> names = {
         "Alice", "Bob", "Charlie", "Diana", "Eve",
@@ -42,18 +41,12 @@ struct CoffeeBooth : public Booth {
         "Iced Latte", "Smoothie", "Matcha", "Turmeric Latte", "Black Tea"
     };
 
-    // public:    
-    void addCustomer() {
-        string name = names[generateRandomInt(0,names.size() - 1)];
-        string drink = drinks[generateRandomInt(0,names.size() - 1)];
-        queue.enqueue(name, drink); // Adding the customer to the queue
-    }
-
     void initializeQueue() override{
         for (int i = 0; i < 3; i++) { // Adds 3 customers to the queue
             this->addCustomer();
         }   
     }
+    
     string simulateRonud() override {
         stringstream RoundResult;
         RoundResult << "Coffee Booth: \n";
@@ -61,48 +54,68 @@ struct CoffeeBooth : public Booth {
         if (!queue.isEmpty()) {
             RoundResult << "Serving: [Name: " << queue.peekFirst()
                    << ", Drink: " << queue.peekSecond() << "]\n";
+            queue.dequeue();
+        } else {RoundResult << "Queue is empty. No one to serve.\n";}
+
+        if (generateRandomInt(0,1) == 1) {
+            RoundResult << "A new customer has joined the queue.\n";
+            this->addCustomer();
+        } else {RoundResult << "No new customers joined this round.\n";}
+        return RoundResult.str(); // Return the stringstream as a string
+    }
+
+    private:
+    void addCustomer() {
+        string name = names[generateRandomInt(0,names.size() - 1)];
+        string drink = drinks[generateRandomInt(0,names.size() - 1)];
+        queue.enqueue(name, drink); // Adding the customer to the queue
+    } 
+    string getQueueState() {
+        stringstream state;
+        if (queue.isEmpty()) {
+            state << "[Empty]";
+        } else {
+            queue.print(state);
+        }
+        return state.str();
+    }
+};
+
+class SimulationManager {
+    // private:
+    vector<Booth*> booths;
+
+    public:
+    // Create destructor here
+
+    void addBooth(Booth* booth) {
+        booths.push_back(booth);
+    }
+
+    void initializeAll() { // Initializes all booths
+        for (Booth* booth : booths) {
+            booth->initializeQueue();
+        }
+    }
+
+    void RunSimulation() {
+        int rounds = 10;
+        for (int i = 0; i < rounds; i++) {
+            cout << "\n===== Round " << i + 1 << " =====\n";
+            for (Booth* booth : booths) {
+                cout << booth->simulateRonud();
+            }
         }
     }
 };
 
 
-
-// struct CofeeBoothSimulator {
-
-//     void run() {
-//         int rounds = 10;
-//         for (int i = 0; i < rounds; i++) {
-//             cout << "\n===== Round " << i + 1 << " =====\n";
-
-//             // Server the customer at the head of the queue
-//             if (!queue.isEmpty()) {
-//                 cout << "Serving customer: [Name: " << queue.peekFirst() 
-//                     << ", Drink: " << queue.peekSecond() << "]\n";
-//                 queue.dequeue(); // remove the person from the queue
-//             } else {
-//                 cout << "Queue is empty. No one to serve.\n";
-//             }
-
-//             // 50% chance of a new customer joining the queue
-//             if (generateRandomInt(0,1) == 1) {
-//                 cout << "A new customer has joined the queue.\n";
-//                 this->addCustomer();
-//             } else {cout << "No new customers joined this round.\n";}
-
-//             // Printing the queue after the end of the round
-//             cout << "Queue at the end of round " << i + 1 << ":\n";
-//             queue.print();
-//         }
-//         cout << "\n--- Simulation Complete ---\n";        
-//     }
-
-// };
-
 int main() {
     
-    // CofeeBoothSimulator sim;
-    // sim.initializeQueue();
-    // sim.run();
+    SimulationManager manager;
+    manager.addBooth(new CoffeeBooth);
+    manager.initializeAll();
+    manager.RunSimulation();
 
 
     return 0;

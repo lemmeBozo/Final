@@ -36,7 +36,7 @@ class LinkedList {
     bool isEmpty() {return (head == nullptr);}
     int size() {return CurrentSize;}
     void clear();
-    void print();
+    void print(ostream& os) con;
 
 };
 
@@ -101,3 +101,6 @@ void LinkedList<T, D>::print() {
         temp = temp->next; 
     }
 }
+
+
+
