@@ -286,7 +286,6 @@ class SimulationManager {
 
 
 int main() {
-    
     SimulationManager manager;
     manager.addBooth(new CoffeeBooth);
     manager.addBooth(new MuffinBooth);
@@ -294,10 +293,6 @@ int main() {
     manager.addBooth(new ClothingBooth);
     manager.initializeAll();
     manager.RunSimulation();
-
-    
-
-
     return 0;
 }
 
