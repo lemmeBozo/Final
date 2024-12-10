@@ -29,7 +29,10 @@ class LinkedList {
     // Container methods
     void enqueue(T&, D&); // Adds a element to the front of the queue
     void dequeue(); // Removes the frist element from the queue
-    T peek(); // returns the value of the front element in the queue
+
+    T peekFirst(); // returns the value of the front element in the queue
+    D peekSecond(); // retruns the value of the front element in the queue
+
     bool isEmpty() {return (head == nullptr);}
     int size() {return CurrentSize;}
     void clear();
@@ -58,5 +61,32 @@ void LinkedList<T,D>::enqueue(T&, D&) {
         }
         temp->next = node;
     }
+    CurrentSize++;
 }
 
+template <typename T, typename D>
+void LinkedList<T,D>::dequeue() {
+    if (!this->isEmpty()) { // If the list isn't empty, removes the first element
+        Node* temp = head;  
+        head = head->next;
+        delete temp;
+        CurrentSize--;
+    }
+}
+
+template<typename T, typename D> 
+T LinkedList<T,D>::peekFirst() {
+    return head->first;
+}
+
+template<typename T, typename D> 
+D LinkedList<T,D>::peekSecond() {
+    return head->second;
+}
+
+template <typename T, typename D>
+void LinkedList<T,D>::clear() {
+    while(!this->isEmpty()) { // while the list isn't empty pop all the elements
+        pop();
+    }
+}
