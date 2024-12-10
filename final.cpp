@@ -50,7 +50,7 @@ struct CoffeeBooth : public Booth {
     string simulateRonud() override {
         stringstream RoundResult;
         RoundResult << "Coffee Booth: \n";
-
+        RoundResult << queue.print() << "\n";
         if (!queue.isEmpty()) {
             RoundResult << "Serving: [Name: " << queue.peekFirst()
                    << ", Drink: " << queue.peekSecond() << "]\n";
@@ -70,15 +70,25 @@ struct CoffeeBooth : public Booth {
         string drink = drinks[generateRandomInt(0,names.size() - 1)];
         queue.enqueue(name, drink); // Adding the customer to the queue
     } 
-    string getQueueState() {
-        stringstream state;
-        if (queue.isEmpty()) {
-            state << "[Empty]";
-        } else {
-            queue.print(state);
-        }
-        return state.str();
+};
+
+struct MuffinBooth : public Booth {
+    // public:
+    vector<string> names = {
+    "Alice", "Bob", "Charlie", "Diana", "Eve",
+    "Frank", "Grace", "Hank", "Isabella", "Jack",
+    "Karen", "Liam", "Mia", "Nathan", "Olivia",
+    "Paul", "Quincy", "Rachel", "Sophia", "Tom"
+    };
+
+    vector<std::string> muffins = {
+        "Blueberry", "Chocolate Chip", "Banana Nut", "Pumpkin", "Corn"
+    };
+
+    void initializeQueue() override {
+        
     }
+
 };
 
 class SimulationManager {

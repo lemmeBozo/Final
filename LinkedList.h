@@ -3,6 +3,10 @@
 
 // Queue
 
+#include <string>
+#include <iostream>
+#include <sstream>
+
 template <typename T, typename D>
 class LinkedList {
     // private:
@@ -36,7 +40,7 @@ class LinkedList {
     bool isEmpty() {return (head == nullptr);}
     int size() {return CurrentSize;}
     void clear();
-    void print(ostream& os) con;
+    std::string print();
 
 };
 
@@ -93,14 +97,18 @@ void LinkedList<T,D>::clear() {
 }
 
 // Printing method
-template <typename T, typename D>
-void LinkedList<T, D>::print() {
-    Node* temp = head; 
-    while (temp != nullptr) {
-        std::cout << "[" << temp->first << "] = [" << temp->second << "]\n"; 
+template<typename T, typename D>
+std::string LinkedList<T,D>::print() {
+    std::stringstream Result;
+    if (head == nullptr) {
+        Result << "[Empty]\n";
+    }
+    Node* temp = head;
+
+    while(temp != nullptr) {
+        Result << "[" << temp->first << "] = [" << temp->second << "]\n"; 
         temp = temp->next; 
     }
+
+    return Result.str();
 }
-
-
-
