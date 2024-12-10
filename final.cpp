@@ -284,7 +284,6 @@ class SimulationManager {
     }
 };
 
-
 int main() {
     SimulationManager manager;
     manager.addBooth(new CoffeeBooth);
@@ -295,7 +294,6 @@ int main() {
     manager.RunSimulation();
     return 0;
 }
-
 
 // Seeding function
 mt19937& getGenerator() {
